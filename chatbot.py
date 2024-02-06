@@ -22,7 +22,7 @@ def main():
 	logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 	level=logging.INFO)
 	# register a dispatcher to handle message: here we register an echo dispatcher
-	#echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+	#echo_handler = MessageHandler(Filters.text, echo)
 	#dispatcher.add_handler(echo_handler)
 
 	# dispatcher for chatgpt
@@ -34,17 +34,24 @@ def main():
 	# on different commands - answer in Telegram
 	dispatcher.add_handler(CommandHandler("add", add))
 	dispatcher.add_handler(CommandHandler("help", help_command))
+	dispatcher.add_handler(CommandHandler("hello", hello_command))
 	# To start the bot:
 	updater.start_polling()
 	updater.idle()
 
-'''
+def hello_command(update, context):
+	try:
+		reply_message = "Good day, {0}!".format(context.args[0])
+		context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
+	except(IndexError, ValueError):
+		update.message.reply_text('can not say hello to you. please type /hello xxxx')
+
 def echo(update, context):
 	reply_message = update.message.text.upper()
 	logging.info("Update: " + str(update))
 	logging.info("context: " + str(context))
 	context.bot.send_message(chat_id=update.effective_chat.id, text= reply_message)
-'''
+
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
 
@@ -70,6 +77,7 @@ def equiped_chatgpt(update, context):
 	reply_message = chatgpt.submit(update.message.text)
 	logging.info("Update: " + str(update))
 	logging.info("context: " + str(context))
+	
 	context.bot.send_message(chat_id=update.effective_chat.id, text=reply_message)
 
 if __name__ == '__main__':
