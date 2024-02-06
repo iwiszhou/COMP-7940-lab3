@@ -1,16 +1,11 @@
 import configparser
 import requests
 class HKBU_ChatGPT():
-    def __init__(self,config,config_path='./config.ini'):
-        print("******")
-        print(self)
-
-        self.config = config
-        
+    def __init__(self,config_path='./config.ini'):
         if type(config_path) == str:
             self.config = configparser.ConfigParser()
             self.config.read(config_path)
-        elif type(self.config) == configparser.ConfigParser:
+        elif type(config_path) == configparser.ConfigParser:
             self.config = config_path
 
     def submit(self,message):
